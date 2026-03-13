@@ -3,391 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <title>Sistema Caminos - Archivo Digital Pro</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"> 
+
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        darkbg: '#0B1120',
-                        darkcard: '#151C2C',
-                        accent: '#A855F7',
-                        accenthover: '#9333EA',
+                        darkbg: '#0B1120',      
+                        darkcard: '#151C2C',    
+                        accent: '#A855F7',      
+                        accenthover: '#9333EA', 
                     }
                 }
             }
         }
     </script>
-    <style>
-        .seccion { display: none; animation: fadeIn 0.3s ease-in-out; }
-        .seccion.activa { display: flex; flex-direction: column; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        
-        /* Scrollbar personalizado */
-        ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-track { background: #0B1120; }
-        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
-        
-        /* Quitar flechas del input numérico */
-        input[type=number]::-webkit-inner-spin-button, 
-        input[type=number]::-webkit-outer-spin-button { 
-            -webkit-appearance: none; 
-            margin: 0; 
-        }
-    </style>
-</head>
-<body class="bg-darkbg text-slate-300 h-screen overflow-hidden flex font-sans">
 
-    <aside class="w-64 bg-darkbg border-r border-slate-800 flex flex-col pt-6 pb-4 z-20">
-        <div class="px-6 mb-8 flex items-center gap-3">
-            <span class="text-white font-bold text-xl tracking-wide">Sistema<span class="text-accent">Caminos</span></span>
-        </div>
-        <nav class="flex-1 px-4 space-y-6">
-            <div>
-                <ul class="space-y-2">
-                    <li>
-                        <button onclick="navegar('overview', this)" class="menu-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-accent text-white font-medium shadow-[0_0_15px_rgba(168,85,247,0.4)]">
-                            <i class="fas fa-chart-pie w-5"></i> Dashboard
-                        </button>
-                    </li>
-                    <li>
-                        <button onclick="navegar('registrar', this)" class="menu-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/50 transition-all font-medium">
-                            <i class="fas fa-plus-square w-5"></i> Registrar Documento
-                        </button>
-                    </li>
-                    <li>
-                        <button onclick="navegar('registros', this)" class="menu-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/50 transition-all font-medium">
-                            <i class="fas fa-table w-5"></i> C-31 CIP - Registros
-                        </button>
-                    </li>
-                </ul>
-            </div>
-        </nav>
-    </aside>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body class="bg-darkbg text-slate-300 h-screen overflow-hidden flex font-sans relative">
+
+    <div id="caja-menu" class="h-full flex-shrink-0 z-20"></div>
 
     <main class="flex-1 flex flex-col h-full overflow-hidden p-6 relative">
         
-        <header class="flex justify-between items-center mb-6 bg-darkcard p-4 rounded-2xl border border-slate-800/50 flex-shrink-0">
-            <div class="flex items-center gap-3 bg-[#0B1120] px-4 py-2 rounded-xl border border-slate-700">
-                <i class="fas fa-calendar-alt text-accent"></i>
-                <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Gestión Activa:</span>
-                <input type="number" id="gestionGlobal" 
-                       onchange="cambiarGestion()" 
-                       onkeyup="if(this.value.length === 4) cambiarGestion()" 
-                       value="2024" 
-                       class="bg-transparent text-accent font-black text-lg outline-none w-16 text-center border-b border-transparent focus:border-accent transition-colors placeholder-slate-600" 
-                       placeholder="Año">
-            </div>
+        <div id="caja-header" class="flex-shrink-0"></div>
 
-            <div class="bg-[#0B1120] border border-slate-700 rounded-full px-4 py-2 flex items-center w-1/3">
-                <i class="fas fa-search text-slate-500 mr-3"></i>
-                <input type="text" placeholder="Buscar por detalle, preventivo o folio..." class="bg-transparent border-none outline-none text-sm w-full text-slate-200">
-            </div>
+        <div id="caja-dashboard" class="h-full"></div>
+        <div id="caja-tabla" class="h-full"></div>
 
-            <div class="flex items-center gap-3">
-                <div class="text-right hidden md:block mr-2">
-                    <p class="text-white text-sm font-bold">Admin Caminos</p>
-                    <p class="text-[10px] text-emerald-400 uppercase font-bold tracking-wider">Conectado</p>
-                </div>
-                <img src="https://ui-avatars.com/api/?name=Admin+Caminos&background=A855F7&color=fff" class="w-10 h-10 rounded-full border-2 border-slate-700">
-            </div>
-        </header>
-
-        <section id="sec-overview" class="seccion activa h-full overflow-y-auto pr-2">
-            <div class="bg-darkcard rounded-2xl p-6 border border-slate-800/50 mb-6 flex items-center justify-center h-64">
-                <div class="text-center">
-                    <h2 class="text-2xl font-bold text-white mb-2">Resumen de la Gestión <span id="lbl-gestion-dash" class="text-accent">2024</span></h2>
-                    <p class="text-slate-400">Aquí irán los gráficos de cuántos archivos se digitalizan por mes.</p>
-                </div>
-            </div>
-        </section>
-
-        <section id="sec-registrar" class="seccion h-full overflow-y-auto pr-2 pb-10">
-            <div class="bg-[#151C2C] rounded-xl p-8 max-w-6xl mx-auto w-full shadow-lg">
-                <div class="flex justify-between items-center mb-8 border-b border-slate-700/50 pb-4">
-                    <h3 class="text-white font-bold text-xl flex items-center gap-3">
-                        <i class="fas fa-edit text-accent"></i> Formulario C-31 CIP
-                    </h3>
-                    <div class="bg-[#2D1B4E] border border-accent/20 px-4 py-2 rounded-lg flex items-center gap-3">
-                        <span class="text-xs text-slate-300 uppercase font-semibold tracking-wider">Código Sugerido:</span>
-                        <span class="text-accent font-black text-lg">001</span>
-                    </div>
-                </div>
-
-                <form class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    
-                    <div class="lg:col-span-2 space-y-8">
-                        <div>
-                            <h4 class="text-xs text-slate-500 uppercase font-bold tracking-widest mb-4">1. Datos Principales</h4>
-                            <div class="grid grid-cols-2 gap-5">
-                                <div class="col-span-2">
-                                    <label class="block text-xs font-semibold text-slate-300 mb-2">Beneficiario</label>
-                                    <input type="text" class="w-full bg-[#0B1120] border border-slate-700/50 rounded-lg px-4 py-3 text-slate-200 outline-none focus:border-accent/50 transition-colors">
-                                </div>
-                                <div class="col-span-2">
-                                    <label class="block text-xs font-semibold text-slate-300 mb-2">Detalle / Resumen</label>
-                                    <input type="text" class="w-full bg-[#0B1120] border border-slate-700/50 rounded-lg px-4 py-3 text-slate-200 outline-none focus:border-accent/50 transition-colors" placeholder="Ej: Pago por compra de semilla">
-                                </div>
-                            </div>
-                        </div>
-
-                        <div>
-                            <h4 class="text-xs text-slate-500 uppercase font-bold tracking-widest mb-4">2. Datos Contables</h4>
-                            <div class="grid grid-cols-3 gap-5">
-                                <div>
-                                    <label class="block text-xs font-semibold text-slate-300 mb-2">Preventivo</label>
-                                    <input type="text" class="w-full bg-[#0B1120] border border-slate-700/50 rounded-lg px-4 py-3 text-slate-200 outline-none focus:border-accent/50 transition-colors">
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-semibold text-slate-300 mb-2">Compromiso</label>
-                                    <input type="text" class="w-full bg-[#0B1120] border border-slate-700/50 rounded-lg px-4 py-3 text-slate-200 outline-none focus:border-accent/50 transition-colors">
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-semibold text-slate-300 mb-2">Devengado</label>
-                                    <input type="text" class="w-full bg-[#0B1120] border border-slate-700/50 rounded-lg px-4 py-3 text-slate-200 outline-none focus:border-accent/50 transition-colors">
-                                </div>
-                                <div class="col-span-3">
-                                    <label class="block text-xs font-semibold text-slate-300 mb-2">Importe Total (Bs.)</label>
-                                    <input type="number" step="0.01" class="w-full bg-[#0B1120] border border-slate-700/50 rounded-lg px-4 py-3 text-emerald-400 font-bold outline-none focus:border-accent/50 transition-colors" placeholder="0.00">
-                                </div>
-                            </div>
-                        </div>
-
-                        <div>
-                            <h4 class="text-xs text-slate-500 uppercase font-bold tracking-widest mb-4">3. Datos de Referencia</h4>
-                            <div class="grid grid-cols-3 gap-5">
-                                <div>
-                                    <label class="block text-xs font-semibold text-slate-300 mb-2">Hoja de Ruta</label>
-                                    <input type="text" class="w-full bg-[#0B1120] border border-slate-700/50 rounded-lg px-4 py-3 text-slate-200 outline-none focus:border-accent/50 transition-colors">
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-semibold text-slate-300 mb-2">N° de Libro de Registro</label>
-                                    <input type="text" class="w-full bg-[#0B1120] border border-slate-700/50 rounded-lg px-4 py-3 text-slate-200 outline-none focus:border-accent/50 transition-colors">
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-semibold text-slate-300 mb-2">Secuencia</label>
-                                    <input type="number" class="w-full bg-[#0B1120] border border-slate-700/50 rounded-lg px-4 py-3 text-slate-200 outline-none focus:border-accent/50 transition-colors">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="space-y-6">
-                        <div class="bg-[#111827] p-6 rounded-xl border border-slate-800/50 h-full flex flex-col shadow-inner">
-                            <h4 class="text-xs text-accent font-bold tracking-widest mb-6">4. ARCHIVO DIGITAL Y FÍSICO</h4>
-                            
-                            <div class="mb-6">
-                                <label class="block text-xs font-semibold text-slate-300 mb-2 flex items-center gap-2">
-                                    <i class="fas fa-box-open text-slate-500"></i> Ubicación Física
-                                </label>
-                                <input type="text" class="w-full bg-[#0B1120] border border-slate-700/50 rounded-lg px-4 py-3 text-slate-200 outline-none focus:border-accent/50 transition-colors" placeholder="Ej: Estante 2 / Caja 15">
-                            </div>
-                            
-                            <div class="flex-1 flex flex-col">
-                                <label class="block text-xs font-semibold text-slate-300 mb-2 flex items-center gap-2">
-                                    <i class="fas fa-file-pdf text-slate-500"></i> Ruta de Archivo (Upload)
-                                </label>
-                                <div class="flex-1 border-2 border-dashed border-slate-600/50 rounded-xl p-6 flex flex-col items-center justify-center hover:border-accent/50 hover:bg-accent/5 transition-all cursor-pointer bg-[#0B1120]/50 relative overflow-hidden group">
-                                    <div class="w-14 h-14 bg-slate-700/50 rounded-full flex items-center justify-center mb-4 group-hover:bg-accent/20 transition-colors">
-                                        <i class="fas fa-cloud-upload-alt text-2xl text-slate-300 group-hover:text-accent"></i>
-                                    </div>
-                                    <p class="text-sm text-white font-semibold mb-1">Arrastra el escaneo PDF</p>
-                                    <p class="text-xs text-slate-500">Máximo 50MB</p>
-                                    <div class="flex gap-2 mt-4 opacity-0 group-hover:opacity-100 transition-opacity z-10">
-                                        <button type="button" class="bg-blue-600/20 text-blue-400 border border-blue-500/30 px-3 py-1 rounded text-xs font-bold hover:bg-blue-600 hover:text-white transition-colors relative z-20">Importar</button>
-                                        <button type="button" class="bg-emerald-600/20 text-emerald-400 border border-emerald-500/30 px-3 py-1 rounded text-xs font-bold hover:bg-emerald-600 hover:text-white transition-colors relative z-20">Escanear</button>
-                                    </div>
-                                    <input type="file" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" id="ruta_archivo">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="lg:col-span-3 flex justify-end gap-4 pt-6 mt-4 border-t border-slate-800/50">
-                        <button type="reset" class="px-6 py-2 rounded-lg text-slate-400 font-bold hover:text-slate-200 transition-colors">Cancelar</button>
-                        <button type="button" class="bg-accent hover:bg-accenthover text-white px-8 py-3 rounded-lg font-bold transition-all shadow-[0_0_15px_rgba(168,85,247,0.4)]">
-                            Guardar Registro
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </section>
-
-        <section id="sec-registros" class="seccion h-full flex-col">
-            
-            <div class="w-full flex flex-col bg-darkcard rounded-2xl border border-slate-800/50 overflow-hidden h-full shadow-lg">
-                <div class="p-4 border-b border-slate-800 bg-[#151C2C] flex justify-between items-center flex-shrink-0">
-                    <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Documentos de la Gestión Activa</span>
-                    <button class="bg-slate-800 text-slate-300 px-4 py-2 rounded-lg text-xs font-bold hover:bg-slate-700 transition-colors"><i class="fas fa-file-excel mr-2 text-emerald-400"></i> Exportar a Excel</button>
-                </div>
-
-                <div class="flex-1 overflow-x-auto overflow-y-auto scroll-custom">
-                    <table class="w-full text-left text-xs whitespace-nowrap min-w-full">
-                        <thead class="bg-[#0B1120] text-[10px] uppercase font-bold text-slate-500 tracking-wider sticky top-0 z-10 shadow-sm">
-                            <tr>
-                                <th class="p-4 border-b border-slate-800">Cód</th>
-                                <th class="p-4 border-b border-slate-800">Gestión</th>
-                                <th class="p-4 border-b border-slate-800">Beneficiario</th>
-                                <th class="p-4 border-b border-slate-800 min-w-[200px]">Detalle / Resumen</th>
-                                <th class="p-4 border-b border-slate-800">Prev.</th>
-                                <th class="p-4 border-b border-slate-800">Comp.</th>
-                                <th class="p-4 border-b border-slate-800">Dev.</th>
-                                <th class="p-4 border-b border-slate-800">Secuencia</th>
-                                <th class="p-4 border-b border-slate-800 text-right">Importe</th>
-                                <th class="p-4 border-b border-slate-800">Hoja de Ruta</th>
-                                <th class="p-4 border-b border-slate-800">Libro Reg.</th>
-                                <th class="p-4 border-b border-slate-800">Ubicación Física</th>
-                                <th class="p-4 border-b border-slate-800 text-center sticky right-0 bg-[#0B1120] shadow-[-5px_0_10px_rgba(0,0,0,0.2)]">Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-slate-800/50 text-slate-300">
-                            
-                            <tr class="hover:bg-slate-800/80 group transition-colors">
-                                <td class="p-4 text-accent font-bold">1</td>
-                                <td class="p-4">2026</td>
-                                <td class="p-4 font-bold text-white">Mike Arnold Urey</td>
-                                <td class="p-4 text-slate-400 truncate max-w-[200px]" title="Pago por compra de semilla">Pago por compra de semilla</td>
-                                <td class="p-4">1024</td>
-                                <td class="p-4">1</td>
-                                <td class="p-4">10</td>
-                                <td class="p-4 text-slate-500">000</td>
-                                <td class="p-4 text-emerald-400 font-bold text-right">19,990.00</td>
-                                <td class="p-4 text-slate-500">-</td>
-                                <td class="p-4 text-slate-500">-</td>
-                                <td class="p-4"><span class="bg-slate-800 text-slate-400 px-2 py-1 rounded border border-slate-700">CAJA 1</span></td>
-                                
-                                <td class="p-4 text-center sticky right-0 bg-darkcard group-hover:bg-slate-800/80 shadow-[-5px_0_10px_rgba(0,0,0,0.1)] transition-colors">
-                                    <div class="flex items-center justify-center gap-2">
-                                        <button title="Ver Documento" onclick="cargarDoc('Mike Arnold Urey')" class="w-8 h-8 rounded flex items-center justify-center bg-accent/10 text-accent border border-accent/20 hover:bg-accent hover:text-white transition-colors">
-                                            <i class="fas fa-file-pdf"></i>
-                                        </button>
-                                        <button title="Editar Registro" onclick="alert('Abriendo modo edición para el Código 1...')" class="w-8 h-8 rounded flex items-center justify-center bg-blue-500/10 text-blue-400 border border-blue-500/20 hover:bg-blue-500 hover:text-white transition-colors">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button title="Eliminar Registro" onclick="alert('¿Estás seguro de que deseas eliminar este registro?')" class="w-8 h-8 rounded flex items-center justify-center bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500 hover:text-white transition-colors">
-                                            <i class="fas fa-trash-alt"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-
-                            <tr class="hover:bg-slate-800/80 group transition-colors">
-                                <td class="p-4 text-accent font-bold">2</td>
-                                <td class="p-4">2026</td>
-                                <td class="p-4 font-bold text-white">Tecnológico Puerto Mejillones</td>
-                                <td class="p-4 text-slate-400 truncate max-w-[200px]" title="Regularizacion de ejecución...">Regularizacion de ejecución...</td>
-                                <td class="p-4">0</td>
-                                <td class="p-4">0</td>
-                                <td class="p-4">0</td>
-                                <td class="p-4 text-slate-500">000</td>
-                                <td class="p-4 text-emerald-400 font-bold text-right">0.00</td>
-                                <td class="p-4 text-slate-500">-</td>
-                                <td class="p-4 text-slate-500">-</td>
-                                <td class="p-4"><span class="bg-slate-800 text-slate-400 px-2 py-1 rounded border border-slate-700">ESTANTE A</span></td>
-                                
-                                <td class="p-4 text-center sticky right-0 bg-darkcard group-hover:bg-slate-800/80 shadow-[-5px_0_10px_rgba(0,0,0,0.1)] transition-colors">
-                                    <div class="flex items-center justify-center gap-2">
-                                        <button title="Ver Documento" onclick="cargarDoc('Tecnológico Puerto Mejillones')" class="w-8 h-8 rounded flex items-center justify-center bg-accent/10 text-accent border border-accent/20 hover:bg-accent hover:text-white transition-colors">
-                                            <i class="fas fa-file-pdf"></i>
-                                        </button>
-                                        <button title="Editar Registro" onclick="alert('Abriendo modo edición para el Código 2...')" class="w-8 h-8 rounded flex items-center justify-center bg-blue-500/10 text-blue-400 border border-blue-500/20 hover:bg-blue-500 hover:text-white transition-colors">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button title="Eliminar Registro" onclick="alert('¿Estás seguro de que deseas eliminar este registro?')" class="w-8 h-8 rounded flex items-center justify-center bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500 hover:text-white transition-colors">
-                                            <i class="fas fa-trash-alt"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
     </main>
 
-    <div id="modalVisor" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] hidden flex items-center justify-center p-4 lg:p-10 transition-opacity">
-        <div class="bg-[#151C2C] w-full h-full max-w-7xl rounded-2xl border border-slate-700 flex flex-col overflow-hidden shadow-2xl transform scale-95 opacity-0 transition-all duration-300" id="modalVisorContent">
-            
-            <div class="bg-[#0B1120] p-4 text-white flex justify-between items-center border-b border-slate-800">
-                <span id="tituloDocModal" class="text-sm font-bold tracking-widest text-slate-300">
-                    <i class="fas fa-file-pdf text-red-400 mr-2"></i> Cargando documento...
-                </span>
-                <div class="flex gap-4 items-center">
-                    <button class="text-slate-400 hover:text-white transition-colors px-2"><i class="fas fa-print"></i></button>
-                    <button class="text-slate-400 hover:text-white transition-colors px-2"><i class="fas fa-download"></i></button>
-                    <div class="w-px h-5 bg-slate-700 mx-2"></div>
-                    <button onclick="cerrarVisor()" class="text-slate-400 hover:text-white transition-colors w-8 h-8 rounded-full bg-slate-800 hover:bg-red-500 flex items-center justify-center">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-            </div>
-            
-            <div class="flex-1 bg-[#0f1523] flex items-center justify-center relative">
-                <iframe id="visorPdfModal" class="w-full h-full border-none absolute inset-0" src=""></iframe>
-            </div>
-        </div>
-    </div>
+    <div id="caja-modal-registro"></div>
+    <div id="caja-modal-visor"></div>
 
-    <script>
-        // Navegación del menú
-        function navegar(idSeccion, botonClick) {
-            document.querySelectorAll('.seccion').forEach(sec => sec.classList.remove('activa'));
-            document.getElementById('sec-' + idSeccion).classList.add('activa');
-            
-            document.querySelectorAll('.menu-btn').forEach(btn => {
-                btn.className = "menu-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/50 transition-all font-medium";
-            });
-            botonClick.className = "menu-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-accent text-white font-medium shadow-[0_0_15px_rgba(168,85,247,0.4)]";
-        }
-
-        // Lógica del Selector de Gestión Libre
-        function cambiarGestion() {
-            const gestionInput = document.getElementById('gestionGlobal');
-            const gestion = gestionInput.value;
-            
-            if(gestion.length === 4 && gestion > 1900 && gestion < 2100) {
-                document.getElementById('lbl-gestion-dash').innerText = gestion;
-                gestionInput.classList.add('text-emerald-400');
-                setTimeout(() => gestionInput.classList.remove('text-emerald-400'), 500);
-            }
-        }
-
-        // --- NUEVA LÓGICA DEL VISOR MODAL ---
-        function cargarDoc(nombre) {
-            const modal = document.getElementById('modalVisor');
-            const modalContent = document.getElementById('modalVisorContent');
-            
-            // Setear el nombre y archivo
-            document.getElementById('tituloDocModal').innerHTML = `<i class="fas fa-file-pdf text-red-400 mr-2"></i> Viendo: ${nombre}`;
-            document.getElementById('visorPdfModal').src = "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf";
-            
-            // Mostrar Modal
-            modal.classList.remove('hidden');
-            
-            // Pequeño delay para que la animación de "zoom in" funcione
-            setTimeout(() => {
-                modalContent.classList.remove('scale-95', 'opacity-0');
-                modalContent.classList.add('scale-100', 'opacity-100');
-            }, 10);
-        }
-
-        function cerrarVisor() {
-            const modal = document.getElementById('modalVisor');
-            const modalContent = document.getElementById('modalVisorContent');
-            
-            // Animación de "zoom out"
-            modalContent.classList.remove('scale-100', 'opacity-100');
-            modalContent.classList.add('scale-95', 'opacity-0');
-            
-            // Ocultar modal y limpiar PDF después de la animación
-            setTimeout(() => {
-                modal.classList.add('hidden');
-                document.getElementById('visorPdfModal').src = "";
-            }, 300);
-        }
-    </script>
+    <script src="js/app.js"></script>
 </body>
 </html>
