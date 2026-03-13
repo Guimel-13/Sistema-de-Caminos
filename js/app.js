@@ -29,6 +29,14 @@ window.onload = async () => {
     await cargarComponente('caja-tabla_c21_cip', 'interfaz_c21_cip/tabla_registros_c21_cip.html');
     await cargarComponente('caja-modal-registro-c21-cip', 'interfaz_c21_cip/modal_registro_c21_cip.html');
 
+    // NUEVO: Cargamos los componentes del C-21 SIP
+    await cargarComponente('caja-tabla_c21_sip', 'interfaz_c21_sip/tabla_registros_c21_sip.html');
+    await cargarComponente('caja-modal-registro-c21-sip', 'interfaz_c21_sip/modal_registro_c21_sip.html');
+
+    // NUEVO: Cargamos los componentes de Asientos Manuales
+    await cargarComponente('caja-tabla_asientos_manuales', 'interfaz_asientos_manuales/tabla_asientos_manuales.html');
+    await cargarComponente('caja-modal-asientos-manuales', 'interfaz_asientos_manuales/modal_asientos_manuales.html');
+
     const botonInicio = document.querySelector('.menu-btn');
     if(botonInicio) navegar('dashboard', botonInicio);
 };
@@ -43,6 +51,8 @@ function navegar(pantalla, btn) {
     // NUEVO: Oculto también la tabla SIP
     document.getElementById('caja-tabla_sip').classList.add('hidden'); 
     document.getElementById('caja-tabla_c21_cip').classList.add('hidden'); // NUEVA LÍNEA
+    document.getElementById('caja-tabla_c21_sip').classList.add('hidden'); // NUEVA LÍNEA
+    document.getElementById('caja-tabla_asientos_manuales').classList.add('hidden'); // NUEVA LÍNEA
     
     document.querySelectorAll('.seccion').forEach(sec => sec.classList.remove('activa'));
     
@@ -177,6 +187,62 @@ function abrirModalRegistroC21Cip(esEdicion = false) {
 function cerrarModalRegistroC21Cip() {
     const modal = document.getElementById('modalRegistroC21Cip');
     const tarjeta = document.getElementById('modalRegistroContentC21Cip');
+    tarjeta.classList.remove('scale-100', 'opacity-100');
+    tarjeta.classList.add('scale-95', 'opacity-0');
+    setTimeout(() => { modal.classList.add('hidden'); }, 300);
+}
+
+/* =========================================================
+   NUEVO: MODALES DEL C-21 SIP
+   ========================================================= */
+function abrirModalRegistroC21Sip(esEdicion = false) {
+    const modal = document.getElementById('modalRegistroC21Sip');
+    const tarjeta = document.getElementById('modalRegistroContentC21Sip');
+    if(esEdicion) {
+        document.getElementById('tituloFormularioC21Sip').innerHTML = '<i class="fas fa-edit text-blue-400"></i> Editar Registro C-21 SIP';
+        document.getElementById('lblCodigoFormularioC21Sip').innerText = "005"; 
+    } else {
+        document.getElementById('tituloFormularioC21Sip').innerHTML = '<i class="fas fa-plus-square text-accent"></i> Nuevo Formulario C-21 SIP';
+        document.getElementById('lblCodigoFormularioC21Sip').innerText = "AUTO";
+    }
+    modal.classList.remove('hidden');
+    setTimeout(() => {
+        tarjeta.classList.remove('scale-95', 'opacity-0');
+        tarjeta.classList.add('scale-100', 'opacity-100');
+    }, 10);
+}
+
+function cerrarModalRegistroC21Sip() {
+    const modal = document.getElementById('modalRegistroC21Sip');
+    const tarjeta = document.getElementById('modalRegistroContentC21Sip');
+    tarjeta.classList.remove('scale-100', 'opacity-100');
+    tarjeta.classList.add('scale-95', 'opacity-0');
+    setTimeout(() => { modal.classList.add('hidden'); }, 300);
+}
+
+/* =========================================================
+   NUEVO: MODALES DE ASIENTOS MANUALES
+   ========================================================= */
+function abrirModalAsientosManuales(esEdicion = false) {
+    const modal = document.getElementById('modalAsientosManuales');
+    const tarjeta = document.getElementById('modalAsientosManualesContent');
+    if(esEdicion) {
+        document.getElementById('tituloFormularioAsientos').innerHTML = '<i class="fas fa-edit text-blue-400"></i> Editar Asiento Manual';
+        document.getElementById('lblCodigoFormularioAsientos').innerText = "006"; 
+    } else {
+        document.getElementById('tituloFormularioAsientos').innerHTML = '<i class="fas fa-book text-accent"></i> Nuevo Asiento Manual';
+        document.getElementById('lblCodigoFormularioAsientos').innerText = "AUTO";
+    }
+    modal.classList.remove('hidden');
+    setTimeout(() => {
+        tarjeta.classList.remove('scale-95', 'opacity-0');
+        tarjeta.classList.add('scale-100', 'opacity-100');
+    }, 10);
+}
+
+function cerrarModalAsientosManuales() {
+    const modal = document.getElementById('modalAsientosManuales');
+    const tarjeta = document.getElementById('modalAsientosManualesContent');
     tarjeta.classList.remove('scale-100', 'opacity-100');
     tarjeta.classList.add('scale-95', 'opacity-0');
     setTimeout(() => { modal.classList.add('hidden'); }, 300);

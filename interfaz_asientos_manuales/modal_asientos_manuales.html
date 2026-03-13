@@ -1,0 +1,104 @@
+<div id="modalAsientosManuales" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] hidden flex items-center justify-center p-4 lg:p-8 transition-opacity">
+    <div class="bg-[#151C2C] w-full max-w-5xl rounded-2xl border border-slate-700 flex flex-col shadow-2xl transform scale-95 opacity-0 transition-all duration-300 max-h-full overflow-hidden" id="modalAsientosManualesContent">
+        
+        <div class="flex justify-between items-center p-6 border-b border-slate-700/50 bg-[#0B1120] flex-shrink-0">
+            <h3 id="tituloFormularioAsientos" class="text-white font-bold text-xl flex items-center gap-3">
+                <i class="fas fa-book text-accent"></i> Nuevo Asiento Manual
+            </h3>
+            <div class="flex items-center gap-4">
+                <div class="bg-[#2D1B4E] border border-accent/20 px-4 py-1.5 rounded-lg flex items-center gap-3">
+                    <span class="text-xs text-slate-300 uppercase font-semibold tracking-wider">Código:</span>
+                    <span id="lblCodigoFormularioAsientos" class="text-accent font-black text-lg">AUTO</span>
+                </div>
+                <button onclick="cerrarModalAsientosManuales()" class="text-slate-400 hover:text-white transition-colors w-8 h-8 rounded-full bg-slate-800 hover:bg-red-500 flex items-center justify-center">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="p-6 overflow-y-auto scroll-custom">
+            <form class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                
+                <div class="lg:col-span-2 space-y-6">
+                    <div>
+                        <h4 class="text-xs text-slate-500 uppercase font-bold tracking-widest mb-3">1. Datos Principales</h4>
+                        <div class="grid grid-cols-1 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1">Detalle / Glosa</label>
+                                <textarea rows="2" class="w-full bg-[#0B1120] border border-slate-700/50 rounded-lg px-4 py-2.5 text-slate-200 outline-none focus:border-accent/50 transition-colors" placeholder="Ej: Ajuste contable por depreciación..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h4 class="text-xs text-slate-500 uppercase font-bold tracking-widest mb-3">2. Datos del Documento</h4>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1">N° de Documento</label>
+                                <input type="text" class="w-full bg-[#0B1120] border border-slate-700/50 rounded-lg px-4 py-2.5 text-slate-200 outline-none focus:border-accent/50 transition-colors" placeholder="Ej: DOC-9941">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1">Importe Total (Bs.)</label>
+                                <input type="number" step="0.01" class="w-full bg-[#0B1120] border border-slate-700/50 rounded-lg px-4 py-2.5 text-emerald-400 font-bold outline-none focus:border-accent/50 transition-colors" placeholder="0.00">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h4 class="text-xs text-slate-500 uppercase font-bold tracking-widest mb-3">3. Datos de Referencia</h4>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1">Hoja de Ruta</label>
+                                <input type="text" class="w-full bg-[#0B1120] border border-slate-700/50 rounded-lg px-4 py-2.5 text-slate-200 outline-none focus:border-accent/50 transition-colors">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1">Libro Reg.</label>
+                                <input type="text" class="w-full bg-[#0B1120] border border-slate-700/50 rounded-lg px-4 py-2.5 text-slate-200 outline-none focus:border-accent/50 transition-colors">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-6">
+                    <div class="bg-[#111827] p-5 rounded-xl border border-slate-800/50 h-full flex flex-col shadow-inner">
+                        <h4 class="text-xs text-accent font-bold tracking-widest mb-5">4. ARCHIVO DIGITAL Y FÍSICO</h4>
+                        
+                        <div class="mb-5">
+                            <label class="block text-xs font-semibold text-slate-300 mb-2 flex items-center gap-2">
+                                <i class="fas fa-box-open text-slate-500"></i> Ubicación Física
+                            </label>
+                            <input type="text" class="w-full bg-[#0B1120] border border-slate-700/50 rounded-lg px-4 py-2.5 text-slate-200 outline-none focus:border-accent/50 transition-colors" placeholder="Ej: Estante 2 / Caja 15">
+                        </div>
+                        
+                        <div class="flex-1 flex flex-col min-h-[150px]">
+                            <label class="block text-xs font-semibold text-slate-300 mb-2 flex items-center gap-2">
+                                <i class="fas fa-file-pdf text-slate-500"></i> Ruta de Archivo (Upload)
+                            </label>
+                            <div class="flex-1 border-2 border-dashed border-slate-600/50 rounded-xl p-4 flex flex-col items-center justify-center hover:border-accent/50 hover:bg-accent/5 transition-all cursor-pointer bg-[#0B1120]/50 relative overflow-hidden group">
+                                <div class="w-12 h-12 bg-slate-700/50 rounded-full flex items-center justify-center mb-3 group-hover:bg-accent/20 transition-colors">
+                                    <i class="fas fa-cloud-upload-alt text-xl text-slate-300 group-hover:text-accent"></i>
+                                </div>
+                                <p class="text-xs text-white font-semibold mb-1">Arrastra el escaneo PDF</p>
+                                <p class="text-[10px] text-slate-500">Máximo 50MB</p>
+                                
+                                <div class="flex gap-2 mt-3 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                                    <button type="button" class="bg-blue-600/20 text-blue-400 border border-blue-500/30 px-2 py-1 rounded text-[10px] font-bold hover:bg-blue-600 hover:text-white transition-colors relative z-20">Importar</button>
+                                    <button type="button" class="bg-emerald-600/20 text-emerald-400 border border-emerald-500/30 px-2 py-1 rounded text-[10px] font-bold hover:bg-emerald-600 hover:text-white transition-colors relative z-20">Escanear</button>
+                                </div>
+                                <input type="file" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" id="ruta_archivo_asientos">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        
+        <div class="p-4 border-t border-slate-700/50 bg-[#0B1120] flex justify-end gap-4 flex-shrink-0">
+            <button type="button" onclick="cerrarModalAsientosManuales()" class="px-6 py-2 rounded-lg text-slate-400 font-bold hover:text-slate-200 transition-colors text-sm">Cancelar</button>
+            <button type="button" onclick="cerrarModalAsientosManuales(); alert('Asiento Manual guardado exitosamente.')" class="bg-accent hover:bg-accenthover text-white px-8 py-2 rounded-lg font-bold transition-all shadow-[0_0_15px_rgba(168,85,247,0.4)] text-sm">
+                Guardar Asiento Manual
+            </button>
+        </div>
+
+    </div>
+</div>
